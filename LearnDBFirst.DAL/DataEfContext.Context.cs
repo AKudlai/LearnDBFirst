@@ -26,5 +26,6 @@ namespace LearnDBFirst.DAL
         }
     
         public virtual DbSet<Book> Books { get; set; }
+        public virtual DbSet<BookDetail> BookDetails { get; set; }
     }
 }
