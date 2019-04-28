@@ -7,6 +7,7 @@
       <Diagram DiagramId="59fde9af0273415d88388c564c5f3e2c" Name="Diagram1">
         <EntityTypeShape EntityType="LearnDBFirstModel.Book" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="LearnDBFirstModel.BookDetail" Width="1.5" PointX="3.375" PointY="0.75" />
+        <AssociationConnector Association="LearnDBFirstModel.FK_Books_BookDetails" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
