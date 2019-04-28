@@ -12,21 +12,18 @@ namespace LearnDBFirst.DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class Book
+    public partial class Author
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Book()
+        public Author()
         {
             this.BooksAuthors = new HashSet<BooksAuthor>();
         }
     
         public int Id { get; set; }
-        public string Name { get; set; }
-        public Nullable<bool> isActive { get; set; }
-        public Nullable<int> PublisherId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     
-        public virtual BookDetail BookDetail { get; set; }
-        public virtual Publisher Publisher { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BooksAuthor> BooksAuthors { get; set; }
     }

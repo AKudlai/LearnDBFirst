@@ -50,10 +50,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Author.cs">
+      <DependentUpon>DataEfContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="Book.cs">
       <DependentUpon>DataEfContext.tt</DependentUpon>
     </Compile>
     <Compile Include="BookDetail.cs">
+      <DependentUpon>DataEfContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BooksAuthor.cs">
       <DependentUpon>DataEfContext.tt</DependentUpon>
     </Compile>
     <Compile Include="DataEfContext.Context.cs">
@@ -72,6 +78,9 @@
       <DependentUpon>DataEfContext.edmx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Publisher.cs">
+      <DependentUpon>DataEfContext.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="DataEfContext.edmx">

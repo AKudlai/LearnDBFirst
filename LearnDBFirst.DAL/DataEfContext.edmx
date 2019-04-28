@@ -5,6 +5,14 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="LearnDBFirstModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Authors">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="256" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="256" />
+        </EntityType>
         <EntityType Name="BookDetails">
           <Key>
             <PropertyRef Name="Id" />
@@ -21,6 +29,14 @@
           <Property Name="Name" Type="nchar" MaxLength="100" Nullable="false" />
           <Property Name="isActive" Type="bit" />
           <Property Name="PublisherId" Type="int" />
+        </EntityType>
+        <EntityType Name="BooksAuthors">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="BookId" Type="int" Nullable="false" />
+          <Property Name="AuthorId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Publishers">
           <Key>
@@ -53,9 +69,35 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BooksAuthors_Authors">
+          <End Role="Authors" Type="Self.Authors" Multiplicity="1" />
+          <End Role="BooksAuthors" Type="Self.BooksAuthors" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Authors">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BooksAuthors">
+              <PropertyRef Name="AuthorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BooksAuthors_Books">
+          <End Role="Books" Type="Self.Books" Multiplicity="1" />
+          <End Role="BooksAuthors" Type="Self.BooksAuthors" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Books">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BooksAuthors">
+              <PropertyRef Name="BookId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="LearnDBFirstModelStoreContainer">
+          <EntitySet Name="Authors" EntityType="Self.Authors" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BookDetails" EntityType="Self.BookDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Books" EntityType="Self.Books" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BooksAuthors" EntityType="Self.BooksAuthors" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Publishers" EntityType="Self.Publishers" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Books_BookDetails" Association="Self.FK_Books_BookDetails">
             <End Role="Books" EntitySet="Books" />
@@ -64,6 +106,14 @@
           <AssociationSet Name="FK_Books_Publishers" Association="Self.FK_Books_Publishers">
             <End Role="Publishers" EntitySet="Publishers" />
             <End Role="Books" EntitySet="Books" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BooksAuthors_Authors" Association="Self.FK_BooksAuthors_Authors">
+            <End Role="Authors" EntitySet="Authors" />
+            <End Role="BooksAuthors" EntitySet="BooksAuthors" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BooksAuthors_Books" Association="Self.FK_BooksAuthors_Books">
+            <End Role="Books" EntitySet="Books" />
+            <End Role="BooksAuthors" EntitySet="BooksAuthors" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -80,6 +130,7 @@
           <NavigationProperty Name="BookDetail" Relationship="LearnDBFirstModel.FK_Books_BookDetails" FromRole="Book" ToRole="BookDetail" />
           <Property Name="PublisherId" Type="Int32" />
           <NavigationProperty Name="Publisher" Relationship="LearnDBFirstModel.FK_Books_Publishers" FromRole="Book" ToRole="Publisher" />
+          <NavigationProperty Name="BooksAuthors" Relationship="LearnDBFirstModel.FK_BooksAuthors_Books" FromRole="Book" ToRole="BooksAuthor" />
         </EntityType>
         <EntityContainer Name="LearnDBFirstEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Books" EntityType="Self.Book" />
@@ -92,6 +143,16 @@
           <AssociationSet Name="FK_Books_Publishers" Association="LearnDBFirstModel.FK_Books_Publishers">
             <End Role="Publisher" EntitySet="Publishers" />
             <End Role="Book" EntitySet="Books" />
+          </AssociationSet>
+          <EntitySet Name="Authors" EntityType="LearnDBFirstModel.Author" />
+          <EntitySet Name="BooksAuthors" EntityType="LearnDBFirstModel.BooksAuthor" />
+          <AssociationSet Name="FK_BooksAuthors_Autors" Association="LearnDBFirstModel.FK_BooksAuthors_Autors">
+            <End Role="Author" EntitySet="Authors" />
+            <End Role="BooksAuthor" EntitySet="BooksAuthors" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BooksAuthors_Books" Association="LearnDBFirstModel.FK_BooksAuthors_Books">
+            <End Role="Book" EntitySet="Books" />
+            <End Role="BooksAuthor" EntitySet="BooksAuthors" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="BookDetail">
@@ -135,6 +196,49 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Author">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="BooksAuthors" Relationship="LearnDBFirstModel.FK_BooksAuthors_Autors" FromRole="Author" ToRole="BooksAuthor" />
+        </EntityType>
+        <EntityType Name="BooksAuthor">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="BookId" Type="Int32" Nullable="false" />
+          <Property Name="AuthorId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Author" Relationship="LearnDBFirstModel.FK_BooksAuthors_Autors" FromRole="BooksAuthor" ToRole="Author" />
+          <NavigationProperty Name="Book" Relationship="LearnDBFirstModel.FK_BooksAuthors_Books" FromRole="BooksAuthor" ToRole="Book" />
+        </EntityType>
+        <Association Name="FK_BooksAuthors_Autors">
+          <End Type="LearnDBFirstModel.Author" Role="Author" Multiplicity="1" />
+          <End Type="LearnDBFirstModel.BooksAuthor" Role="BooksAuthor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Author">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BooksAuthor">
+              <PropertyRef Name="AuthorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BooksAuthors_Books">
+          <End Type="LearnDBFirstModel.Book" Role="Book" Multiplicity="1" />
+          <End Type="LearnDBFirstModel.BooksAuthor" Role="BooksAuthor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Book">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BooksAuthor">
+              <PropertyRef Name="BookId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -164,6 +268,24 @@
             <EntityTypeMapping TypeName="LearnDBFirstModel.Publisher">
               <MappingFragment StoreEntitySet="Publishers">
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Authors">
+            <EntityTypeMapping TypeName="LearnDBFirstModel.Author">
+              <MappingFragment StoreEntitySet="Authors">
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BooksAuthors">
+            <EntityTypeMapping TypeName="LearnDBFirstModel.BooksAuthor">
+              <MappingFragment StoreEntitySet="BooksAuthors">
+                <ScalarProperty Name="AuthorId" ColumnName="AuthorId" />
+                <ScalarProperty Name="BookId" ColumnName="BookId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

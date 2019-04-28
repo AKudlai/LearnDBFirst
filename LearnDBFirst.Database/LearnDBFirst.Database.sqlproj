@@ -63,6 +63,8 @@
     <Build Include="Tables\Books.sql" />
     <Build Include="Tables\BookDetails.sql" />
     <Build Include="Tables\Publishers.sql" />
+    <Build Include="Tables\Authors.sql" />
+    <Build Include="Tables\BooksAuthors.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LearnDBFirst.Database.publish.xml" />
