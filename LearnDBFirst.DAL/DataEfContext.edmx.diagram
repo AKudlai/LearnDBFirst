@@ -8,6 +8,8 @@
         <EntityTypeShape EntityType="LearnDBFirstModel.Book" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="LearnDBFirstModel.BookDetail" Width="1.5" PointX="3.375" PointY="0.75" />
         <AssociationConnector Association="LearnDBFirstModel.FK_Books_BookDetails" />
+        <EntityTypeShape EntityType="LearnDBFirstModel.Publisher" Width="1.5" PointX="0.75" PointY="4" />
+        <AssociationConnector Association="LearnDBFirstModel.FK_Books_Publishers" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

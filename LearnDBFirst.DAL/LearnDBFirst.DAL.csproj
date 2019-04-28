@@ -53,6 +53,9 @@
     <Compile Include="Book.cs">
       <DependentUpon>DataEfContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="BookDetail.cs">
+      <DependentUpon>DataEfContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataEfContext.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
