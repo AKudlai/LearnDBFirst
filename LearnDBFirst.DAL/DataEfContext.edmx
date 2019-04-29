@@ -105,6 +105,10 @@ warning 6002: The table/view 'LearnDBFirst.dbo.vBook' does not have a primary ke
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="BooksCount" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int">
+          <Parameter Name="firstName" Type="nvarchar" Mode="In" />
+          <Parameter Name="lastName" Type="nvarchar" Mode="In" />
+        </Function>
         <Function Name="spGetBooks" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="authorFirstName" Type="nvarchar" Mode="In" />
           <Parameter Name="authorLastName" Type="nvarchar" Mode="In" />

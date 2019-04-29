@@ -60,6 +60,7 @@
     <Folder Include="Tables" />
     <Folder Include="Views" />
     <Folder Include="Stored Procedures" />
+    <Folder Include="Functions" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Books.sql" />
@@ -69,6 +70,7 @@
     <Build Include="Tables\BooksAuthors.sql" />
     <Build Include="Views\vBook.sql" />
     <Build Include="Stored Procedures\spGetBooks.sql" />
+    <Build Include="Functions\BooksCount.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LearnDBFirst.Database.publish.xml" />
