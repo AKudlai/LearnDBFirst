@@ -12,6 +12,8 @@ namespace LearnDBFirst.DAL
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class LearnDBFirstEntities : DbContext
     {
@@ -30,5 +32,19 @@ namespace LearnDBFirst.DAL
         public virtual DbSet<Publisher> Publishers { get; set; }
         public virtual DbSet<Author> Authors { get; set; }
         public virtual DbSet<BooksAuthor> BooksAuthors { get; set; }
+        public virtual DbSet<vBook> vBooks { get; set; }
+    
+        public virtual ObjectResult<string> spGetBooks(string authorFirstName, string authorLastName)
+        {
+            var authorFirstNameParameter = authorFirstName != null ?
+                new ObjectParameter("authorFirstName", authorFirstName) :
+                new ObjectParameter("authorFirstName", typeof(string));
+    
+            var authorLastNameParameter = authorLastName != null ?
+                new ObjectParameter("authorLastName", authorLastName) :
+                new ObjectParameter("authorLastName", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("spGetBooks", authorFirstNameParameter, authorLastNameParameter);
+        }
     }
 }

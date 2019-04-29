@@ -45,6 +45,18 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="266" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LearnDBFirst.dbo.vBook' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vBook">
+          <Key>
+            <PropertyRef Name="BookName" />
+          </Key>
+          <Property Name="BookName" Type="nchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="NumberOfPages" Type="int" />
+          <Property Name="AuthorsName" Type="nvarchar" MaxLength="514" />
+          <Property Name="PublisherName" Type="nvarchar" MaxLength="266" />
+        </EntityType>
         <Association Name="FK_Books_BookDetails">
           <End Role="Books" Type="Self.Books" Multiplicity="1" />
           <End Role="BookDetails" Type="Self.BookDetails" Multiplicity="0..1" />
@@ -93,12 +105,25 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="spGetBooks" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="authorFirstName" Type="nvarchar" Mode="In" />
+          <Parameter Name="authorLastName" Type="nvarchar" Mode="In" />
+        </Function>
         <EntityContainer Name="LearnDBFirstModelStoreContainer">
           <EntitySet Name="Authors" EntityType="Self.Authors" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BookDetails" EntityType="Self.BookDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Books" EntityType="Self.Books" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BooksAuthors" EntityType="Self.BooksAuthors" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Publishers" EntityType="Self.Publishers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vBook" EntityType="Self.vBook" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vBook].[BookName] AS [BookName], 
+    [vBook].[Description] AS [Description], 
+    [vBook].[NumberOfPages] AS [NumberOfPages], 
+    [vBook].[AuthorsName] AS [AuthorsName], 
+    [vBook].[PublisherName] AS [PublisherName]
+    FROM [dbo].[vBook] AS [vBook]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_Books_BookDetails" Association="Self.FK_Books_BookDetails">
             <End Role="Books" EntitySet="Books" />
             <End Role="BookDetails" EntitySet="BookDetails" />
@@ -154,6 +179,11 @@
             <End Role="Book" EntitySet="Books" />
             <End Role="BooksAuthor" EntitySet="BooksAuthors" />
           </AssociationSet>
+          <EntitySet Name="vBooks" EntityType="LearnDBFirstModel.vBook" />
+          <FunctionImport Name="spGetBooks" ReturnType="Collection(String)">
+            <Parameter Name="authorFirstName" Mode="In" Type="String" />
+            <Parameter Name="authorLastName" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="BookDetail">
           <Key>
@@ -239,6 +269,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="vBook">
+          <Key>
+            <PropertyRef Name="BookName" />
+          </Key>
+          <Property Name="BookName" Type="String" Nullable="false" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NumberOfPages" Type="Int32" />
+          <Property Name="AuthorsName" Type="String" MaxLength="514" FixedLength="false" Unicode="true" />
+          <Property Name="PublisherName" Type="String" MaxLength="266" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -290,6 +330,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="vBooks">
+            <EntityTypeMapping TypeName="LearnDBFirstModel.vBook">
+              <MappingFragment StoreEntitySet="vBook">
+                <ScalarProperty Name="PublisherName" ColumnName="PublisherName" />
+                <ScalarProperty Name="AuthorsName" ColumnName="AuthorsName" />
+                <ScalarProperty Name="NumberOfPages" ColumnName="NumberOfPages" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="BookName" ColumnName="BookName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spGetBooks" FunctionName="LearnDBFirstModel.Store.spGetBooks" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

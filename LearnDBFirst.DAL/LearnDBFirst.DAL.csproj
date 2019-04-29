@@ -81,6 +81,9 @@
     <Compile Include="Publisher.cs">
       <DependentUpon>DataEfContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="vBook.cs">
+      <DependentUpon>DataEfContext.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="DataEfContext.edmx">
