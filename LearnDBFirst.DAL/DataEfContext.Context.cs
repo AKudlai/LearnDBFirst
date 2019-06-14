@@ -31,10 +31,9 @@ namespace LearnDBFirst.DAL
         public virtual DbSet<BookDetail> BookDetails { get; set; }
         public virtual DbSet<Publisher> Publishers { get; set; }
         public virtual DbSet<Author> Authors { get; set; }
-        public virtual DbSet<BooksAuthor> BooksAuthors { get; set; }
         public virtual DbSet<vBook> vBooks { get; set; }
     
-        public virtual ObjectResult<string> spGetBooks(string authorFirstName, string authorLastName)
+        public virtual ObjectResult<spGetBooks_Result> spGetBooks(string authorFirstName, string authorLastName)
         {
             var authorFirstNameParameter = authorFirstName != null ?
                 new ObjectParameter("authorFirstName", authorFirstName) :
@@ -44,7 +43,7 @@ namespace LearnDBFirst.DAL
                 new ObjectParameter("authorLastName", authorLastName) :
                 new ObjectParameter("authorLastName", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("spGetBooks", authorFirstNameParameter, authorLastNameParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spGetBooks_Result>("spGetBooks", authorFirstNameParameter, authorLastNameParameter);
         }
     }
 }

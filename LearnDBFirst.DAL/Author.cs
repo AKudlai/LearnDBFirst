@@ -17,7 +17,7 @@ namespace LearnDBFirst.DAL
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Author()
         {
-            this.BooksAuthors = new HashSet<BooksAuthor>();
+            this.Books = new HashSet<Book>();
         }
     
         public int Id { get; set; }
@@ -25,6 +25,6 @@ namespace LearnDBFirst.DAL
         public string LastName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BooksAuthor> BooksAuthors { get; set; }
+        public virtual ICollection<Book> Books { get; set; }
     }
 }

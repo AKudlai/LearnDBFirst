@@ -32,9 +32,9 @@
         </EntityType>
         <EntityType Name="BooksAuthors">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="BookId" />
+            <PropertyRef Name="AuthorId" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="BookId" Type="int" Nullable="false" />
           <Property Name="AuthorId" Type="int" Nullable="false" />
         </EntityType>
@@ -54,7 +54,7 @@ warning 6002: The table/view 'LearnDBFirst.dbo.vBook' does not have a primary ke
           <Property Name="BookName" Type="nchar" MaxLength="100" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="NumberOfPages" Type="int" />
-          <Property Name="AuthorsName" Type="nvarchar" MaxLength="514" />
+          <Property Name="AuthorsName" Type="nvarchar" MaxLength="4000" />
           <Property Name="PublisherName" Type="nvarchar" MaxLength="266" />
         </EntityType>
         <Association Name="FK_Books_BookDetails">
@@ -159,7 +159,7 @@ warning 6002: The table/view 'LearnDBFirst.dbo.vBook' does not have a primary ke
           <NavigationProperty Name="BookDetail" Relationship="LearnDBFirstModel.FK_Books_BookDetails" FromRole="Book" ToRole="BookDetail" />
           <Property Name="PublisherId" Type="Int32" />
           <NavigationProperty Name="Publisher" Relationship="LearnDBFirstModel.FK_Books_Publishers" FromRole="Book" ToRole="Publisher" />
-          <NavigationProperty Name="BooksAuthors" Relationship="LearnDBFirstModel.FK_BooksAuthors_Books" FromRole="Book" ToRole="BooksAuthor" />
+          <NavigationProperty Name="Authors" Relationship="LearnDBFirstModel.BooksAuthors" FromRole="Book" ToRole="Author" />
         </EntityType>
         <EntityContainer Name="LearnDBFirstEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Books" EntityType="Self.Book" />
@@ -174,20 +174,15 @@ warning 6002: The table/view 'LearnDBFirst.dbo.vBook' does not have a primary ke
             <End Role="Book" EntitySet="Books" />
           </AssociationSet>
           <EntitySet Name="Authors" EntityType="LearnDBFirstModel.Author" />
-          <EntitySet Name="BooksAuthors" EntityType="LearnDBFirstModel.BooksAuthor" />
-          <AssociationSet Name="FK_BooksAuthors_Autors" Association="LearnDBFirstModel.FK_BooksAuthors_Autors">
-            <End Role="Author" EntitySet="Authors" />
-            <End Role="BooksAuthor" EntitySet="BooksAuthors" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BooksAuthors_Books" Association="LearnDBFirstModel.FK_BooksAuthors_Books">
-            <End Role="Book" EntitySet="Books" />
-            <End Role="BooksAuthor" EntitySet="BooksAuthors" />
-          </AssociationSet>
           <EntitySet Name="vBooks" EntityType="LearnDBFirstModel.vBook" />
-          <FunctionImport Name="spGetBooks" ReturnType="Collection(String)">
+          <FunctionImport Name="spGetBooks" ReturnType="Collection(LearnDBFirstModel.spGetBooks_Result)">
             <Parameter Name="authorFirstName" Mode="In" Type="String" />
             <Parameter Name="authorLastName" Mode="In" Type="String" />
           </FunctionImport>
+          <AssociationSet Name="BooksAuthors" Association="LearnDBFirstModel.BooksAuthors">
+            <End Role="Author" EntitySet="Authors" />
+            <End Role="Book" EntitySet="Books" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="BookDetail">
           <Key>
@@ -237,42 +232,8 @@ warning 6002: The table/view 'LearnDBFirst.dbo.vBook' does not have a primary ke
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="FirstName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="LastName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="BooksAuthors" Relationship="LearnDBFirstModel.FK_BooksAuthors_Autors" FromRole="Author" ToRole="BooksAuthor" />
+          <NavigationProperty Name="Books" Relationship="LearnDBFirstModel.BooksAuthors" FromRole="Author" ToRole="Book" />
         </EntityType>
-        <EntityType Name="BooksAuthor">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="BookId" Type="Int32" Nullable="false" />
-          <Property Name="AuthorId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Author" Relationship="LearnDBFirstModel.FK_BooksAuthors_Autors" FromRole="BooksAuthor" ToRole="Author" />
-          <NavigationProperty Name="Book" Relationship="LearnDBFirstModel.FK_BooksAuthors_Books" FromRole="BooksAuthor" ToRole="Book" />
-        </EntityType>
-        <Association Name="FK_BooksAuthors_Autors">
-          <End Type="LearnDBFirstModel.Author" Role="Author" Multiplicity="1" />
-          <End Type="LearnDBFirstModel.BooksAuthor" Role="BooksAuthor" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Author">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="BooksAuthor">
-              <PropertyRef Name="AuthorId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_BooksAuthors_Books">
-          <End Type="LearnDBFirstModel.Book" Role="Book" Multiplicity="1" />
-          <End Type="LearnDBFirstModel.BooksAuthor" Role="BooksAuthor" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Book">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="BooksAuthor">
-              <PropertyRef Name="BookId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="vBook">
           <Key>
             <PropertyRef Name="BookName" />
@@ -280,9 +241,17 @@ warning 6002: The table/view 'LearnDBFirst.dbo.vBook' does not have a primary ke
           <Property Name="BookName" Type="String" Nullable="false" MaxLength="100" FixedLength="true" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="NumberOfPages" Type="Int32" />
-          <Property Name="AuthorsName" Type="String" MaxLength="514" FixedLength="false" Unicode="true" />
+          <Property Name="AuthorsName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="PublisherName" Type="String" MaxLength="266" FixedLength="false" Unicode="true" />
         </EntityType>
+        <ComplexType Name="spGetBooks_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="100" />
+        </ComplexType>
+        <Association Name="BooksAuthors">
+          <End Type="LearnDBFirstModel.Author" Role="Author" Multiplicity="*" />
+          <End Type="LearnDBFirstModel.Book" Role="Book" Multiplicity="*" />
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -325,15 +294,6 @@ warning 6002: The table/view 'LearnDBFirst.dbo.vBook' does not have a primary ke
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="BooksAuthors">
-            <EntityTypeMapping TypeName="LearnDBFirstModel.BooksAuthor">
-              <MappingFragment StoreEntitySet="BooksAuthors">
-                <ScalarProperty Name="AuthorId" ColumnName="AuthorId" />
-                <ScalarProperty Name="BookId" ColumnName="BookId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="vBooks">
             <EntityTypeMapping TypeName="LearnDBFirstModel.vBook">
               <MappingFragment StoreEntitySet="vBook">
@@ -345,7 +305,22 @@ warning 6002: The table/view 'LearnDBFirst.dbo.vBook' does not have a primary ke
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="spGetBooks" FunctionName="LearnDBFirstModel.Store.spGetBooks" />
+          <FunctionImportMapping FunctionImportName="spGetBooks" FunctionName="LearnDBFirstModel.Store.spGetBooks">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LearnDBFirstModel.spGetBooks_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <AssociationSetMapping Name="BooksAuthors" TypeName="LearnDBFirstModel.BooksAuthors" StoreEntitySet="BooksAuthors">
+            <EndProperty Name="Book">
+              <ScalarProperty Name="Id" ColumnName="BookId" />
+            </EndProperty>
+            <EndProperty Name="Author">
+              <ScalarProperty Name="Id" ColumnName="AuthorId" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
